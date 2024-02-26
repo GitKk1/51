@@ -1,0 +1,55 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              01/08/2023 13:30:25 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OMF2 OPTIMIZE(8,SPEED) BROWSE DEBUG PRINT(.\Listings\main.lst) OB
+                    -JECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include"DS1302.H"
+   3          #include"LCD1602.H"
+   4                  
+   5          void main()
+   6          {
+   7   1       
+   8   1              LCD_Init();
+   9   1              DS1302_Init();
+  10   1              DS1302_SetTime();       
+  11   1              LCD_ShowString(1,1,"  -  -");
+  12   1              LCD_ShowString(2,1,"  :  :");
+  13   1              while(1)
+  14   1              {
+  15   2                      DS1302_ReadTime();
+  16   2                      LCD_ShowNum(1,1,Time[0],2);
+  17   2                      LCD_ShowNum(1,4,Time[1],2);
+  18   2                      LCD_ShowNum(1,7,Time[2],2);
+  19   2                      LCD_ShowNum(2,1,Time[3],2);
+  20   2                      LCD_ShowNum(2,4,Time[4],2);
+  21   2                      LCD_ShowNum(2,7,Time[5],2);
+  22   2                      LCD_ShowNum(1,14,Time[6],2);
+  23   2                      
+  24   2              }
+  25   1      
+  26   1      
+  27   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    145    ----
+   CONSTANT SIZE    =     14    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,9 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\Delay.obj",
+".\Objects\LCD1602.obj",
+".\Objects\Timer0.obj",
+".\Objects\ds1302.obj" 
+TO ".\Objects\ds1302" 
+
+PRINT(".\Listings\ds1302.map") REMOVEUNUSED 
