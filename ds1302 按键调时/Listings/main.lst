@@ -1,0 +1,190 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              02/18/2023 13:05:27 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OMF2 OPTIMIZE(8,SPEED) BROWSE DEBUG PRINT(.\Listings\main.lst) OB
+                    -JECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include"DS1302.H"
+   3          #include"LCD1602.H"
+   4          #include"DELAY.H"
+   5          #include"KEY.H"
+   6          #include"TIMER0.H"
+   7          
+   8          sbit led_c=P2^3;
+   9          sbit add=P2^0;
+  10          sbit subtracat=P2^1;
+  11          sbit select=P2^4;
+  12          
+  13          unsigned char Keynum,MODE,Keynum2,TimeSetSelect,Flash;
+  14          
+  15          void Timeshow(void)
+  16          {
+  17   1              LCD_ShowString(1,12,"MODE");
+  18   1              LCD_ShowString(2,12,"SELE");
+  19   1              LCD_ShowNum(1,16,MODE,1);
+  20   1              LCD_ShowNum(2,16,TimeSetSelect,1);
+  21   1              led_c=1;
+  22   1              
+  23   1              DS1302_ReadTime();
+  24   1              LCD_ShowNum(1,1,Time[0],2);
+  25   1              LCD_ShowNum(1,4,Time[1],2);
+  26   1              LCD_ShowNum(1,7,Time[2],2);
+  27   1              LCD_ShowNum(2,1,Time[3],2);
+  28   1              LCD_ShowNum(2,4,Time[4],2);
+  29   1              LCD_ShowNum(2,7,Time[5],2);
+  30   1      }
+  31                  
+  32          void Timeset(void)
+  33          {
+  34   1              LCD_ShowString(1,12,"MODE");
+  35   1              LCD_ShowString(2,12,"SELE");
+  36   1              LCD_ShowNum(1,16,MODE,1);
+  37   1              LCD_ShowNum(2,16,TimeSetSelect,1);
+  38   1              led_c=0;
+  39   1              
+  40   1              if(Keynum==2)
+  41   1              {
+  42   2                      TimeSetSelect++;                                        //切换调整位置    
+  43   2                      TimeSetSelect%=6;
+  44   2              }
+  45   1               
+  46   1              if(Keynum2==1)
+  47   1              {
+  48   2              Time[TimeSetSelect-1]++;
+  49   2              if(Time[1]>12) {Time[1]=1;}     
+  50   2              
+  51   2              if(Time[1]==4||Time[1]==6||Time[1]==9||Time[1]==11) {if(Time[2]>30){Time[2]=1;}}
+  52   2              else if(Time[1]==2)
+  53   2              {       
+  54   3                      if(Time[0]%4==0)
+C51 COMPILER V9.60.0.0   MAIN                                                              02/18/2023 13:05:27 PAGE 2   
+
+  55   3                      {
+  56   4                              if(Time[2]>29)
+  57   4                              {
+  58   5                                      Time[2]=1;      
+  59   5                              }
+  60   4                      }       
+  61   3                      else if(Time[0]%4!=0)
+  62   3                      {
+  63   4                              if(Time[2]>28)
+  64   4                              {Time[2]=1;}
+  65   4                      }
+  66   3      
+  67   3                      }               
+  68   2              else if(Time[1]==1||Time[1]==3||Time[1]==5||Time[1]==7||Time[1]==8||
+  69   2                              Time[1]==10||Time[1]==12) {if(Time[2]>31){Time[2]=1;}}
+  70   2              if(Time[3]>23) {Time[3]=0;}
+  71   2              if(Time[4]>60) {Time[4]=0;}             
+  72   2              }
+  73   1              
+  74   1              if(Keynum2==2)  
+  75   1              {
+  76   2                      Time[TimeSetSelect-1]--; 
+  77   2                      if(Time[1]<1) {Time[1]=12;}     
+  78   2                      
+  79   2                      if(Time[1]==4||Time[1]==6||Time[1]==9||Time[1]==11) {if(Time[2]<1){Time[2]=30;}}
+  80   2                      else if(Time[1]==2)
+  81   2                      {       
+  82   3                              if(Time[0]%4==0)
+  83   3                              {
+  84   4                                      if(Time[2]<1)
+  85   4                                      {
+  86   5                                              Time[2]=29;     
+  87   5                                      }
+  88   4                              }       
+  89   3                              else if(Time[0]%4!=0)
+  90   3                              {
+  91   4                                      if(Time[2]<1)
+  92   4                                      {Time[2]=28;}
+  93   4                              }
+  94   3                      }               
+  95   2                      else if(Time[1]==1||Time[1]==3||Time[1]==5||Time[1]==7||Time[1]==8||
+  96   2                                      Time[1]==10||Time[1]==12) {if(Time[2]<1){Time[2]=31;}}  
+  97   2                      if(Time[3]<1) {Time[3]=23;}
+  98   2                      if(Time[4]<1) {Time[4]=59;}                     
+  99   2              }
+ 100   1              
+ 101   1      
+ 102   1              
+ 103   1              LCD_ShowNum(2,7,Time[5],2);
+ 104   1              
+ 105   1              if(TimeSetSelect==1&&Flash==1) {LCD_ShowString(1,1,"  ");}
+ 106   1              else{LCD_ShowNum(1,1,Time[0],2);}
+ 107   1              if(TimeSetSelect==2&&Flash==1) {LCD_ShowString(1,4,"  ");}
+ 108   1              else{LCD_ShowNum(1,4,Time[1],2);}
+ 109   1              if(TimeSetSelect==3&&Flash==1) {LCD_ShowString(1,7,"  ");}
+ 110   1              else{LCD_ShowNum(1,7,Time[2],2);}
+ 111   1              if(TimeSetSelect==4&&Flash==1) {LCD_ShowString(2,1,"  ");}      
+ 112   1              else{LCD_ShowNum(2,1,Time[3],2);}
+ 113   1              if(TimeSetSelect==5&&Flash==1) {LCD_ShowString(2,4,"  ");}
+ 114   1              else{LCD_ShowNum(2,4,Time[4],2);}
+ 115   1              Time[5]=0;
+ 116   1              DS1302_SetTime();       
+C51 COMPILER V9.60.0.0   MAIN                                                              02/18/2023 13:05:27 PAGE 3   
+
+ 117   1      }
+ 118          
+ 119          void main()
+ 120          {
+ 121   1              Timer_Init();
+ 122   1              LCD_Init();
+ 123   1              DS1302_Init();
+ 124   1              DS1302_SetTime();       
+ 125   1              LCD_ShowString(1,1,"  -  -");
+ 126   1              LCD_ShowString(2,1,"  :  :");
+ 127   1              
+ 128   1              while(1)
+ 129   1              {
+ 130   2                      Keynum=Key();
+ 131   2                      Keynum2=Key2();
+ 132   2                      if(Keynum==1)
+ 133   2                      {                       
+ 134   3                              if(MODE==0){MODE=1;}
+ 135   3                              else if(MODE==1){MODE=0;TimeSetSelect=0;}
+ 136   3                      }
+ 137   2                      
+ 138   2                      switch(MODE)
+ 139   2                      {
+ 140   3                              case 0:Timeshow();break;
+ 141   3                              case 1:Timeset();break;
+ 142   3                      }                               
+ 143   2              }
+ 144   1      }
+ 145          
+ 146          
+ 147          void Timer0_Rountine() interrupt 1  //延时一秒程序示例
+ 148          {
+ 149   1              static unsigned int T0count;
+ 150   1              TL0 = 0x18;             //设置定时初值   24   0001 1000    176=(65535-50000)%256
+ 151   1              TH0 = 0xFC;             //设置定时初值   252  1111 1100    60=(65536-50000)/256 
+ 152   1              T0count++;
+ 153   1              if(T0count>=500)
+ 154   1              {       
+ 155   2                      Flash=!Flash;   
+ 156   2                      T0count=0;
+ 157   2              }
+ 158   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    993    ----
+   CONSTANT SIZE    =     27    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      7    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

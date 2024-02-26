@@ -1,0 +1,82 @@
+C51 COMPILER V9.60.0.0   TSET                                                              02/17/2023 12:43:55 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TSET
+OBJECT MODULE PLACED IN .\Objects\Tset.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Tset.c OMF2 OPTIMIZE(8,SPEED) BROWSE DEBUG PRINT(.\Listings\Tset.lst) OB
+                    -JECT(.\Objects\Tset.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include"DS1302.H"
+   3          #include"LCD1602.H"
+   4          #include"DELAY.H"
+   5          #include"KEY.H"
+   6          
+   7          sbit led_c=P2^3;
+   8          
+   9          extern Keynum,MODE,Keynum2;
+  10          
+  11          unsigned char TimeSetSelect;
+  12          
+  13          void Timeshow(void)
+  14          {
+  15   1              LCD_ShowString(1,12,"MODE");
+  16   1              LCD_ShowString(2,12,"SELE");
+  17   1              LCD_ShowNum(1,16,MODE,1);
+  18   1              LCD_ShowNum(2,16,TimeSetSelect,1);
+  19   1              led_c=1;
+  20   1              
+  21   1              DS1302_ReadTime();
+  22   1              LCD_ShowNum(1,1,Time[0],2);
+  23   1              LCD_ShowNum(1,4,Time[1],2);
+  24   1              LCD_ShowNum(1,7,Time[2],2);
+  25   1              LCD_ShowNum(2,1,Time[3],2);
+  26   1              LCD_ShowNum(2,4,Time[4],2);
+  27   1              LCD_ShowNum(2,7,Time[5],2);
+  28   1      }
+  29                  
+  30          void Timeset(void)
+  31          {
+  32   1              Keynum2=Key2();
+  33   1              Keynum=Key();
+  34   1              LCD_ShowString(1,12,"MODE");
+  35   1              LCD_ShowString(2,12,"SELE");
+  36   1              LCD_ShowNum(1,16,MODE,1);
+  37   1              LCD_ShowNum(2,16,TimeSetSelect,1);
+  38   1              led_c=0;
+  39   1              
+  40   1              if(Keynum==2)
+  41   1              {
+  42   2                      TimeSetSelect++;                                        //切换调整位置    
+  43   2                      TimeSetSelect%=6;
+  44   2              }
+  45   1              if(Keynum2==1) Time[TimeSetSelect-1]++;         //1:set year    2:set month 3:set date  
+  46   1              if(Keynum2==2) Time[TimeSetSelect-1]--;         //4:set hour  5:set minute
+  47   1                      
+  48   1              Time[5]=0;
+  49   1              DS1302_SetTime();
+  50   1      
+  51   1              
+  52   1      }
+
+
+C51 COMPILER V9.60.0.0   TSET                                                              02/17/2023 12:43:55 PAGE 2   
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    276    ----
+   CONSTANT SIZE    =     10    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
